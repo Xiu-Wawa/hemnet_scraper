@@ -66,5 +66,5 @@ class HemnetSpider(scrapy.Spider):
 
 
 	def spider_closed(self, spider):
-		with open('data.json', w) as fp:
+		with open('data.json', 'w') as fp:
 			json.dump(self.results, fp)
