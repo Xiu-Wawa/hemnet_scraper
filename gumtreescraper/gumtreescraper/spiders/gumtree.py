@@ -1,21 +1,25 @@
 import scrapy
 
+from ..items import GumtreeItem
+
 
 class GumtreeScraper(scrapy.Spider):
 	name = "gumtree"
-	allowed_domains = ["web"]
 	start_urls = ['https://www.gumtree.com/flats-houses/london']
 
-
 	def parse(self, response):
-		ads = response.xpath('//article[@class="listing-maxi"]/parent::li')
-		for ad in ads:
-			link = ad.xpath('/descendant::a/@href').get()
-			title = ad.xpath('normalize-space(descendant::h2/text())').get()
-			# location = ad.xpath('normalize-space(span[@class="truncate-line"]/text())').get()
+		items = GumtreeItem()
 
-			yield {
-				"link": link,
-				"title": title
-			}
+		ads = response.xpath('//article[@class="listing-maxi"]')
+
+		for ad in ads:
+			items['url'] = response.urljoin(ad.xpath('./a/@href').extract_first())
+			items['title'] = ad.xpath('.//h2[@class="listing-title"]/text()').extract_first()
+
+			yield items
+
+			
+
+
+
 			
