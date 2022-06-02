@@ -13,12 +13,15 @@ class GumtreeScraper(scrapy.Spider):
 		url = 'https://www.gumtree.com/flats-houses/london'
 		yield scrapy.Request(url=url, callback=self.parse)
 
+	def add_base_url(self, selector, response, xpath: str) -> str:
+		return response.urljoin(selector.xpath(xpath).get())
 
 	def parse(self, response):
 		for ad in response.xpath('//article[@class="listing-maxi"]'):
-			l = ItemLoader(item = GumtreescraperItem(), selector=ad)
+			url = self.add_base_url(ad, response, './a/@href')
 
-			l.add_xpath('link', './a/@href')
+			l = ItemLoader(item = GumtreescraperItem(), selector=ad)
+			l.add_value('link', url)
 			l.add_xpath('title', './/h2[@class="listing-title"]')
 			l.add_xpath('location', './/span[@class="truncate-line"]')
 			l.add_xpath('price', './/strong[@class="h3-responsive"]')
