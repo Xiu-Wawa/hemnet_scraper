@@ -44,11 +44,6 @@ class BookingScraper(scrapy.Spider):
 		l.add_xpath("Rating", 'normalize-space(//div[@data-testid="review-score-component"]/child::div[@aria-label="Scored 9.1 "])')
 		l.add_xpath("Reviews", 'normalize-space(//div[@class="b1e6dd8416 b48795b3df"]/child::div[2])')
 
-		# next_page = f'https://www.booking.com/searchresults.html?aid=304142&ss=United+Kingdom&nflt=ht_id%3D220&offset={self.page_num}'
-		# if self.page_num <= 25:
-		# 	self.page_num += 25
-		# 	yield response.follow(next_page, callback=self.parse)
-
 
 		yield l.load_item()
 
